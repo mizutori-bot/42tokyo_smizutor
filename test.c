@@ -1,14 +1,17 @@
-#include<stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-int main(void)
-{
-    int a;
-    int b;
-    int c;
+char * foo() {
+  char a[200];
+  strcpy(a, "hello world cup\n");
+  return a;
+}
 
-    a = 5;
-    b = 10;
-
-    c = a + b;
-    printf("%d", c);
+int main() {
+  char * a = foo();
+  char c = a[0];
+  printf("a[0] = %c\n", c);
+  printf("a = %s\n", a);
+  return 0;
 }

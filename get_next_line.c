@@ -3,28 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sho <sho@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: smizutor <smizutor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 20:34:00 by sho               #+#    #+#             */
-/*   Updated: 2022/03/09 17:52:43 by sho              ###   ########.fr       */
+/*   Updated: 2022/03/15 17:29:15 by smizutor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #define BUFFER_SIZE 4
-/* #define LEAK_DETECT
-#ifdef LEAK_DETECT
-#include "leakdetect.h"
-#define init leak_detect_init
-#define malloc(s) leak_detelc_malloc(s, __FILE__, __LINE__) 
-#define free leak_detect_free
-#define check leak_detect_check
-#else
-#define init() 
-#define check()
-#endif  */
 
-size_t	ft_strlen(const char *s)
+
+/* size_t	ft_strlen(const char *s)
 {	
 	size_t	i;
 
@@ -121,7 +111,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	}
 	s2[i] = '\0';
 	return (s2);
-}
+ } */
 
 void		*ft_memset(void *b, int c, size_t len)
 {
@@ -144,7 +134,7 @@ int		ft_memdel(void **ptr)
 		ft_memset(*ptr, 0, ft_strlen(*ptr));
 		free(*ptr);
 		*ptr = NULL;
-		return (1);
+		return (-1);
 	}
 	return (0);
 }
@@ -170,20 +160,10 @@ int read_join(char **save, char **tmp, int fd)
 	{
 		ret = read(fd, buf, BUFFER_SIZE);
 		if (ret == 0 && *save[0] == '\0')
-			return (-1);
+			return (ft_memdel((void *)save));//ここに来た時に、saveがfreeされてない
 		buf[ret] = '\0';
 		*tmp = ft_strjoin(*save, buf);
-		/* printf(" before free save ptr = %p\n", *save);
-		printf(" before free save = %s\n", *save);
-
-		printf("before free  tmp ptr = %p\n", *tmp);
-		printf("before free  tmp = %s\n", *tmp); */
 		ft_memdel((void *)save);
-		/* printf("save ptr = %p\n", *save);
-		printf("save = %s\n", *save);
-
-		printf("tmp ptr = %p\n", *tmp);
-		printf("tmp ptr = %s\n", *tmp); */
 		*save = *tmp;
 	}
 	return (ret);
@@ -207,6 +187,8 @@ char *get_next_line(int fd)
 	if (ret < 0)
 		return (NULL);
 	n_split(save, &line, &tmp, ret);
+	if(save && ret)
+		ft_memdel((void *)&save);//これをしないとメモリリーク
 	save = tmp;
 
 	if(ret == 0)
@@ -219,15 +201,14 @@ int main(void)
 	int fd;
 	char *line = NULL;
 
-	//init();
+	//nit();
     
  	if ((fd = open("shobobo.text", O_RDONLY)) == -1)
 	{
 		perror("open");
 		return (0);
 	}
-	
-	while (1)
+		while (1)
 	{
 		free(line);
 		line = get_next_line(fd);
