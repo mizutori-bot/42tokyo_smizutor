@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sho <sho@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: smizutor <smizutor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 20:34:45 by sho               #+#    #+#             */
-/*   Updated: 2022/03/06 21:03:10 by sho              ###   ########.fr       */
+/*   Updated: 2022/03/17 17:00:11 by smizutor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,24 +71,26 @@ char	*ft_strdup(const char *s1)
 	return (s2);
 }
 
-char	*ft_strchr(const char *s, int c)
+size_t ft_strchr(const char *s, int c)
 {
 	char	*str;
 	size_t	i;
 
 	if (!s || !c)
-		return (NULL);
+		return (0);
 	str = (char *)s;
 	i = 0;
 	while (str[i] != c)
 	{
 		if (str[i] == '\0')
 		{
-			return (NULL);
+			return (0);
 		}
 		i++;
 	}
-	return ((char *)&s[i]);
+	if (i == 0)
+		return (1);
+	return (i);
 }
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)

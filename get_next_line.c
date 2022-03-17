@@ -6,13 +6,11 @@
 /*   By: smizutor <smizutor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 20:34:00 by sho               #+#    #+#             */
-/*   Updated: 2022/03/15 17:29:15 by smizutor         ###   ########.fr       */
+/*   Updated: 2022/03/17 17:15:00 by smizutor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#define BUFFER_SIZE 4
-
 
 /* size_t	ft_strlen(const char *s)
 {	
@@ -73,24 +71,26 @@ char	*ft_strdup(const char *s1)
 	return (s2);
 }
 
-char	*ft_strchr(const char *s, int c)
+size_t ft_strchr(const char *s, int c)
 {
 	char	*str;
 	size_t	i;
 
 	if (!s || !c)
-		return (NULL);
+		return (0);
 	str = (char *)s;
 	i = 0;
 	while (str[i] != c)
 	{
 		if (str[i] == '\0')
 		{
-			return (NULL);
+			return (0);
 		}
 		i++;
 	}
-	return ((char *)&s[i]);
+	if (i == 0)
+		return (1);
+	return (i);
 }
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
@@ -111,7 +111,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	}
 	s2[i] = '\0';
 	return (s2);
- } */
+ }*/
 
 void		*ft_memset(void *b, int c, size_t len)
 {
@@ -139,15 +139,21 @@ int		ft_memdel(void **ptr)
 	return (0);
 }
 
-void n_split(char *save, char **line, char **tmp, int ret)
+void n_split(char **save, char **line, char **tmp, int ret)
 {
 	if (ret == 0)
-		*line = ft_strdup(save);
+		*line = ft_strdup(*save);
 	else if (ret > 0)
 	{
-		*line = ft_substr(save, 0, (ft_strchr(save, '\n') - save));
-		*tmp = ft_strdup(save + ft_strlen(*line) + 1);
+		if (ft_strchr(*save, '\n') == 1)
+			*line = ft_substr(*save, 0, ft_strchr(*save, '\n'));
+		else
+			*line = ft_substr(*save, 0, ft_strchr(*save, '\n') + 1);
+		*tmp = ft_strdup(*save + ft_strlen(*line));
 	}
+	if(*save && ret)
+		ft_memdel((void *)save);
+	*save = *tmp;
 }
 
 int read_join(char **save, char **tmp, int fd)
@@ -181,22 +187,26 @@ char *get_next_line(int fd)
 	if (!save)
 	{
 		save = (char *)malloc(sizeof(char));
+		if (!save)
+			return (NULL);
 		save[0] = '\0';
 	}
 	ret = read_join(&save, &tmp, fd);
 	if (ret < 0)
+	{
+		ft_memdel((void *)&save);
 		return (NULL);
-	n_split(save, &line, &tmp, ret);
-	if(save && ret)
+	}
+	n_split(&save, &line, &tmp, ret);
+	/* if(save && ret)
 		ft_memdel((void *)&save);//これをしないとメモリリーク
-	save = tmp;
-
+	save = tmp; */
 	if(ret == 0)
 		ft_memdel((void *)&save);
 	return (line);
 }
 
-int main(void)
+/* int main(void)
 {
 	int fd;
 	char *line = NULL;
@@ -212,7 +222,7 @@ int main(void)
 	{
 		free(line);
 		line = get_next_line(fd);
-		printf("%s\n", line);
+		printf("[start]%s", line);
 
 		if (!line)
 		{
@@ -229,6 +239,6 @@ int main(void)
 	//check();
 
 	return (0);
-}
+} */
 
 //標準入力に対応できていない
