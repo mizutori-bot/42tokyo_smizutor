@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: smizutor <smizutor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 20:34:00 by sho               #+#    #+#             */
-/*   Updated: 2022/03/18 18:14:33 by smizutor         ###   ########.fr       */
+/*   Updated: 2022/03/18 18:13:25 by smizutor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 /* size_t	ft_strlen(const char *s)
 {	
@@ -178,35 +178,38 @@ int read_join(char **save, char **tmp, int fd)
 char *get_next_line(int fd)
 {
 	char *line;
-	static char *save;
+	static char *save[MAX_FD];
 	char *tmp;
 	int ret;
 
 	if (fd < 0 || BUFFER_SIZE < 0)
 		return (NULL);
-	if (!save)
+	if (!save[fd])
 	{
-		save = (char *)malloc(sizeof(char));
-		if (!save)
+		save[fd] = (char *)malloc(sizeof(char));
+		if (!save[fd])
 			return (NULL);
-		save[0] = '\0';
+		save[fd][0] = '\0';
 	}
-	ret = read_join(&save, &tmp, fd);
+	ret = read_join(&save[fd], &tmp, fd);
 	if (ret < 0)
 	{
-		ft_memdel((void *)&save);
+		ft_memdel((void *)&save[fd]);
 		return (NULL);
 	}
-	n_split(&save, &line, &tmp, ret);
+	n_split(&save[fd], &line, &tmp, ret);
 	if(ret == 0)
-		ft_memdel((void *)&save);
+		ft_memdel((void *)&save[fd]);
 	return (line);
 }
 
 /* int main(void)
 {
 	int fd;
+    int fd2;
 	char *line = NULL;
+    char *line2 = NULL;
+
 
 	//nit();
     
@@ -215,20 +218,39 @@ char *get_next_line(int fd)
 		perror("open");
 		return (0);
 	}
-		while (1)
+
+    if ((fd2 = open("shobobo2.text", O_RDONLY)) == -1)
+	{
+		perror("open");
+		return (0);
+	}
+
+	while (1)
 	{
 		free(line);
+        free(line2);
 		line = get_next_line(fd);
-		printf("[start]%s", line);
+        line2 = get_next_line(fd2);
 
-		if (!line)
+		printf("[start]%s", line);
+        printf("[start]%s", line2);
+
+		if (!line || !line2)
 		{
 			free(line);
+            free(line2);
 			break;
 		}
 	}
+
 	
 	if (close(fd) == -1)
+	{
+		perror("close");
+		return (0);
+	}
+
+    if (close(fd2) == -1)
 	{
 		perror("close");
 		return (0);

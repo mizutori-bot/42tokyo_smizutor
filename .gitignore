@@ -7,3 +7,4 @@ gnltester
 .vscode/tasks.json
 get_next_line.dSYM/Contents/Info.plist
 get_next_line.dSYM/Contents/Resources/DWARF/get_next_line
+*dSYM
