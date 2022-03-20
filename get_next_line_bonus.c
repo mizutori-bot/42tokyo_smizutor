@@ -6,13 +6,14 @@
 /*   By: smizutor <smizutor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 20:34:00 by sho               #+#    #+#             */
-/*   Updated: 2022/03/18 18:13:25 by smizutor         ###   ########.fr       */
+/*   Updated: 2022/03/18 18:57:24 by smizutor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line_bonus.h"
+#define BUFFER_SIZE 4
 
-/* size_t	ft_strlen(const char *s)
+size_t	ft_strlen(const char *s)
 {	
 	size_t	i;
 
@@ -111,7 +112,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	}
 	s2[i] = '\0';
 	return (s2);
- } */
+ }
 
 void		*ft_memset(void *b, int c, size_t len)
 {
@@ -203,7 +204,7 @@ char *get_next_line(int fd)
 	return (line);
 }
 
-/* int main(void)
+int main(void)
 {
 	int fd;
     int fd2;
@@ -258,6 +259,6 @@ char *get_next_line(int fd)
 	//check();
 
 	return (0);
-} */
+}
 
 //標準入力に対応できていない

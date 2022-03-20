@@ -6,13 +6,14 @@
 /*   By: smizutor <smizutor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 20:34:00 by sho               #+#    #+#             */
-/*   Updated: 2022/03/18 18:14:33 by smizutor         ###   ########.fr       */
+/*   Updated: 2022/03/20 21:41:17 by smizutor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#define BUFFER_SIZE 42
 
-/* size_t	ft_strlen(const char *s)
+size_t	ft_strlen(const char *s)
 {	
 	size_t	i;
 
@@ -88,8 +89,6 @@ size_t ft_strchr(const char *s, int c)
 		}
 		i++;
 	}
-	if (i == 0)
-		return (1);
 	return (i);
 }
 
@@ -111,7 +110,7 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	}
 	s2[i] = '\0';
 	return (s2);
- } */
+ }
 
 void		*ft_memset(void *b, int c, size_t len)
 {
@@ -145,10 +144,7 @@ void n_split(char **save, char **line, char **tmp, int ret)
 		*line = ft_strdup(*save);
 	else if (ret > 0)
 	{
-		if (ft_strchr(*save, '\n') == 1)
-			*line = ft_substr(*save, 0, ft_strchr(*save, '\n'));
-		else
-			*line = ft_substr(*save, 0, ft_strchr(*save, '\n') + 1);
+		*line = ft_substr(*save, 0, ft_strchr(*save, '\n') + 1);
 		*tmp = ft_strdup(*save + ft_strlen(*line));
 	}
 	if(*save && ret)
@@ -162,7 +158,7 @@ int read_join(char **save, char **tmp, int fd)
 	int ret;
 
 	ret = 1;
-	while (!(ft_strchr(*save, '\n')) && ret)
+	while (!(ft_strchr(*save, '\n')) && ret && *save[0] != '\n')
 	{
 		ret = read(fd, buf, BUFFER_SIZE);
 		if (ret == 0 && *save[0] == '\0')
@@ -194,7 +190,8 @@ char *get_next_line(int fd)
 	ret = read_join(&save, &tmp, fd);
 	if (ret < 0)
 	{
-		ft_memdel((void *)&save);
+		if (save)
+			ft_memdel((void *)&save);
 		return (NULL);
 	}
 	n_split(&save, &line, &tmp, ret);
@@ -203,12 +200,12 @@ char *get_next_line(int fd)
 	return (line);
 }
 
-/* int main(void)
+int main(void)
 {
 	int fd;
 	char *line = NULL;
 
-	//nit();
+	//init();
     
  	if ((fd = open("shobobo.text", O_RDONLY)) == -1)
 	{
@@ -234,8 +231,7 @@ char *get_next_line(int fd)
 		return (0);
 	}
 	//check();
-
 	return (0);
-} */
+}
 
 //標準入力に対応できていない
