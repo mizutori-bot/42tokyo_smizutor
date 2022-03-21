@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smizutor <smizutor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sho <sho@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 20:34:45 by sho               #+#    #+#             */
-/*   Updated: 2022/03/17 17:00:11 by smizutor         ###   ########.fr       */
+/*   Updated: 2022/03/21 17:22:30 by sho              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,7 @@ size_t ft_strchr(const char *s, int c)
 		}
 		i++;
 	}
-	if (i == 0)
-		return (1);
-	return (i);
+	return (i + 1);
 }
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
@@ -104,11 +102,11 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	if (s2 == NULL)
 		return (NULL);
 	i = 0;
-	while (i < len && start < ft_strlen(s))
+	while (i < len)//二つ目の条件いる？
 	{
 		s2[i] = s[i + start];
 		i++;
 	}
 	s2[i] = '\0';
 	return (s2);
-}
+ }

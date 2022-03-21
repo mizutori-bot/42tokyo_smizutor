@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: smizutor <smizutor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sho <sho@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 20:34:00 by sho               #+#    #+#             */
-/*   Updated: 2022/03/20 21:41:17 by smizutor         ###   ########.fr       */
+/*   Updated: 2022/03/21 19:30:41 by sho              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#define BUFFER_SIZE 42
 
-size_t	ft_strlen(const char *s)
+/* size_t	ft_strlen(const char *s)
 {	
 	size_t	i;
 
@@ -89,7 +88,7 @@ size_t ft_strchr(const char *s, int c)
 		}
 		i++;
 	}
-	return (i);
+	return (i + 1);
 }
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
@@ -103,14 +102,14 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	if (s2 == NULL)
 		return (NULL);
 	i = 0;
-	while (i < len && start < ft_strlen(s))
+	while (i < len && start < ft_strlen(s))//二つ目の条件いる？
 	{
 		s2[i] = s[i + start];
 		i++;
 	}
 	s2[i] = '\0';
 	return (s2);
- }
+ } */
 
 void		*ft_memset(void *b, int c, size_t len)
 {
@@ -144,7 +143,7 @@ void n_split(char **save, char **line, char **tmp, int ret)
 		*line = ft_strdup(*save);
 	else if (ret > 0)
 	{
-		*line = ft_substr(*save, 0, ft_strchr(*save, '\n') + 1);
+		*line = ft_substr(*save, 0, ft_strchr(*save, '\n'));
 		*tmp = ft_strdup(*save + ft_strlen(*line));
 	}
 	if(*save && ret)
@@ -158,10 +157,10 @@ int read_join(char **save, char **tmp, int fd)
 	int ret;
 
 	ret = 1;
-	while (!(ft_strchr(*save, '\n')) && ret && *save[0] != '\n')
+	while (!(ft_strchr(*save, '\n')) && ret)
 	{
 		ret = read(fd, buf, BUFFER_SIZE);
-		if (ret == 0 && *save[0] == '\0')
+		if ((ret == 0 && *save[0] == '\0') || ret == -1)//ここで無効なfdを弾く処理を入れる
 			return (ft_memdel((void *)save));
 		buf[ret] = '\0';
 		*tmp = ft_strjoin(*save, buf);
@@ -188,19 +187,15 @@ char *get_next_line(int fd)
 		save[0] = '\0';
 	}
 	ret = read_join(&save, &tmp, fd);
-	if (ret < 0)
-	{
-		if (save)
-			ft_memdel((void *)&save);
+	if (ret < 0)//whileの中でやらないと永遠にループする
 		return (NULL);
-	}
 	n_split(&save, &line, &tmp, ret);
 	if(ret == 0)
 		ft_memdel((void *)&save);
 	return (line);
 }
 
-int main(void)
+/* int main(void)
 {
 	int fd;
 	char *line = NULL;
@@ -232,6 +227,6 @@ int main(void)
 	}
 	//check();
 	return (0);
-}
+} */
 
 //標準入力に対応できていない
