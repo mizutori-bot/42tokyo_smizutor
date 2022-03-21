@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sho <sho@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: smizutor <smizutor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 20:34:45 by sho               #+#    #+#             */
-/*   Updated: 2022/03/21 17:22:30 by sho              ###   ########.fr       */
+/*   Updated: 2022/03/21 20:30:39 by smizutor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,11 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	if (s2 == NULL)
 		return (NULL);
 	i = 0;
-	while (i < len)//二つ目の条件いる？
+	while (i < len && start < ft_strlen(s))//二つ目の条件いる？
 	{
 		s2[i] = s[i + start];
 		i++;
 	}
 	s2[i] = '\0';
 	return (s2);
- }
+}

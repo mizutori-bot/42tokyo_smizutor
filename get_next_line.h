@@ -15,7 +15,7 @@ char	*ft_strdup(const char *s1);
 size_t  ft_strchr(const char *s, int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 void	*ft_memset(void *b, int c, size_t len);
-int		ft_memdel(void **ptr);
+int		ft_memdel(char **ptr);
 void    n_split(char **save, char **line, char **tmp, int ret);
 int     read_join(char **save, char **tmp, int fd);
 char    *get_next_line(int fd);

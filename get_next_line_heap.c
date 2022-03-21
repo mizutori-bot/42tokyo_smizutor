@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_heap.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: smizutor <smizutor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/06 20:34:00 by sho               #+#    #+#             */
-/*   Updated: 2022/03/21 22:09:14 by smizutor         ###   ########.fr       */
+/*   Updated: 2022/03/21 19:55:35 by smizutor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #define BUFFER_SIZE 4
 
-/* size_t	ft_strlen(const char *s)
+size_t	ft_strlen(const char *s)
 {	
 	size_t	i;
 
@@ -110,9 +110,9 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	}
 	s2[i] = '\0';
 	return (s2);
-} */
+}
 
-int		ft_memdel(char **ptr)
+int		ft_memdel(void **ptr)
 {
 	if (*ptr)
 	{
@@ -133,7 +133,7 @@ void n_split(char **save, char **line, char **tmp, int ret)
 		*tmp = ft_strdup(*save + ft_strlen(*line));
 	}
 	if(*save && ret)
-		ft_memdel(save);
+		ft_memdel((void *)save);
 	*save = *tmp;
 }
 
@@ -147,17 +147,14 @@ int read_join(char **save, char **tmp, int fd)
 	{
         buf = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
         if (!buf)
-            return (ft_memdel(save));
+            return (ft_memdel((void *)save));
 		ret = read(fd, buf, BUFFER_SIZE);
-		if ((ret == 0 && *save[0] == '\0') || ret == -1)
-		{
-			free(buf);
-			return (ft_memdel(save));
-		}
+		if ((ret == 0 && *save[0] == '\0') || ret == -1)//ここで無効なfdを弾く処理を入れる
+			return (ft_memdel((void *)save));
 		buf[ret] = '\0';
 		*tmp = ft_strjoin(*save, buf);
-        ft_memdel(&buf);
-		ft_memdel(save);
+        free(buf);
+		ft_memdel((void *)save);
 		*save = *tmp;
 	}
 	return (ret);
@@ -184,7 +181,7 @@ char *get_next_line(int fd)
 		return (NULL);
 	n_split(&save, &line, &tmp, ret);
 	if(ret == 0)
-		ft_memdel(&save);
+		ft_memdel((void *)&save);
 	return (line);
 }
 
@@ -221,3 +218,5 @@ int main(void)
 	//check();
 	return (0);
 }
+
+//標準入力に対応できていない
